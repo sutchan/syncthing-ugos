@@ -1,16 +1,17 @@
-# project.yaml v1.0.2
+# project.yaml v1.0.3
 # Syncthing for UGOS Pro — 应用元数据
 # 规范: docs/specs/02-project-yaml.md
 spec_version: "2.1"
 app_id: com.syncthing.docker.syncthing
 version: 1.27.0
+x_image_tag: 1.27.0               # 镜像 tag，与 version 解耦（便于独立升级镜像）
 support_arch:
   - amd64
   - arm64
 supports:
   - app
   - pc
-start_cmd: docker-compose up -d   # 占位；实际由系统按 compose 拉起
+start_cmd: ""                     # Docker 应用由系统按 rootfs_common/docker-compose.yaml 拉起，无需 start_cmd
 port: 8384                         # Syncthing Web GUI 默认端口
 open_type: tab                     # 浏览器标签打开 Syncthing 原生 UI
 tag_types:

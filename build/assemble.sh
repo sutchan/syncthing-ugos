@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# assemble.sh v1.0.1
+# assemble.sh v1.0.2
 # Syncthing for UGOS Pro — 组装打包目录
 #
 # 功能: 将 project.yaml / icon.png / docker-compose.yaml 组装到
@@ -28,9 +28,12 @@ COMPOSE_DST="${COMMON_DIR}/docker-compose.yaml"
 log() { echo "[assemble] $*"; }
 err() { echo "[assemble][ERROR] $*" >&2; }
 
-# 从 project.yaml 读取镜像版本(取 version 字段)
-VERSION="$(grep -E '^version:' "${PROJECT_YAML_SRC}" | head -1 | awk '{print $2}' | tr -d '"')"
-IMAGE_FULL="docker.io/syncthing/syncthing:${VERSION}"
+# 读取镜像 tag: 优先 x_image_tag(与 version 解耦)，否则回退 version
+IMAGE_TAG="$(grep -E '^x_image_tag:' "${PROJECT_YAML_SRC}" | head -1 | awk '{print $2}' | tr -d '"')"
+if [ -z "${IMAGE_TAG}" ]; then
+  IMAGE_TAG="$(grep -E '^version:' "${PROJECT_YAML_SRC}" | head -1 | awk '{print $2}' | tr -d '"')"
+fi
+IMAGE_FULL="docker.io/syncthing/syncthing:${IMAGE_TAG}"
 
 # 校验前置产物
 [ -f "${ICON_SRC}" ] || { err "缺少 ${ICON_SRC}，请先运行 build/make-icon.ps1 (Windows) 生成图标"; exit 1; }

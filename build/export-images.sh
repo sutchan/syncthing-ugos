@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# export-images.sh v1.0.2
+# export-images.sh v1.0.3
 # Syncthing for UGOS Pro — 导出多架构镜像 tar
 #
 # 功能:
@@ -91,10 +91,12 @@ print(len(tags), (tags[0] if tags else ""))')
   fi
   if [ "${tag_count}" -ne 1 ]; then
     err "校验失败: ${tar_path} 含 ${tag_count} 个 tag(应仅 1 个)"
+    rm -f "${tar_path}"
     exit 1
   fi
   if [ "${first_tag}" != "${IMAGE_FULL}" ]; then
     err "校验失败: tar 内 tag='${first_tag}' 与期望 '${IMAGE_FULL}' 不一致"
+    rm -f "${tar_path}"
     exit 1
   fi
   log "已导出并通过校验: ${tar_path} (tag=${IMAGE_FULL}, 单平台 ${plat})"

@@ -2,6 +2,14 @@
 
 本项目遵循语义化版本（应用版本 `x.y.z` 取自上游 Syncthing，UPK 包版本为 `应用版本.构建号`）。
 
+## [1.27.0.3] - 2026-08-13
+
+### 修复
+- `project.yaml` 的 `start_cmd` 置空（`""`），Docker 应用由系统按 `docker-compose.yaml` 拉起，避免与 compose 重复拉起冲突。
+- 新增 `x_image_tag` 自定义字段解耦镜像 tag 与应用 `version` 语义；`build/assemble.sh` 优先读取 `x_image_tag` 拼接镜像名，缺失时回退 `version`。
+- `build/export-images.sh` 镜像 tar 校验失败时自动删除已生成的坏 tar，避免后续 `assemble` 误用。
+- 同步 `docs/specs/02-project-yaml.md` 的 `start_cmd` 与 `x_image_tag` 字段说明。
+
 ## [1.27.0.2] - 2026-08-13
 
 ### 修复

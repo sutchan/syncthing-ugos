@@ -20,8 +20,9 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| `start_cmd` | string | 是 | 启动命令（Docker 应用可填 compose 服务名或占位，实际由 compose 拉起） |
+| `start_cmd` | string | 是 | 启动命令（Docker 应用留空 `""`，由系统按 `docker-compose.yaml` 拉起，无需该字段） |
 | `port` | number | 是 | 服务端口（Syncthing GUI 端口） |
+| `x_image_tag` | string | 否 | 自定义扩展字段：镜像 tag，与 `version` 解耦，供 `assemble.sh` 拼接 `docker.io/syncthing/syncthing:<tag>`；缺省回退 `version` |
 | `proxy_path` | string | 否 | 代理路径前缀，如 `api/v1` |
 | `open_type` | string | 是 | `inner`（桌面窗口）或 `tab`（浏览器标签） |
 | `depend_fw_version` | string | 是 | 依赖最低系统版本，如 `1.13.0.0000` |
@@ -80,13 +81,14 @@ permissions:
 spec_version: "2.1"
 app_id: com.syncthing.docker.syncthing
 version: 1.27.0
+x_image_tag: 1.27.0               # 镜像 tag，与 version 解耦
 support_arch:
   - amd64
   - arm64
 supports:
   - app
   - pc
-start_cmd: docker-compose up -d   # 占位；实际由系统按 compose 拉起
+start_cmd: ""                     # Docker 应用留空，由系统按 compose 拉起
 port: 8384                         # Syncthing Web GUI 默认端口
 open_type: tab                     # 浏览器标签打开 Syncthing 原生 UI
 tag_types:
