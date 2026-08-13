@@ -1,0 +1,7 @@
+# 打包产物目录（由 build 脚本生成，非源码）
+/com.syncthing.docker.syncthing/
+/build_dir/
+
+# 本地配置 / 临时文件
+*.log
+.DS_Store

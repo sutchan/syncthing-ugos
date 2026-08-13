@@ -54,12 +54,14 @@
 
 ## 7.7 后续实现清单（规范落地）
 
-> 状态：仓库当前仅含 `docs/specs/` 规范文档，以下文件**均未创建**。
+> 状态：规范落地实现进行中；代码仓库态文件已创建，打包机验证（`ugcli`）待执行。
 
-- [ ] `project.yaml`（按 02 节取值）
-- [ ] `rootfs_common/icon.png`（512×512）
-- [ ] `rootfs_common/docker-compose.yaml`（按 03 节）
-- [ ] `build/export-images.sh`（导出 amd64/arm64 镜像 tar）
-- [ ] `build/docker-compose.yaml.tpl`（模板）
-- [ ] `README.md`（安装、使用、端口、外网同步说明）
-- [ ] `ugcli check` / `ugcli pack` 验证
+- [x] `project.yaml`（按 02 节取值）— 已建于仓库根目录
+- [x] `assets/icon.png`（512×512，由 `build/make-icon.ps1` 生成）
+- [x] `rootfs_common/docker-compose.yaml`（按 03 节，由 `build/assemble.sh` 渲染生成）
+- [x] `build/export-images.sh`（导出 amd64/arm64 镜像 tar）
+- [x] `build/docker-compose.yaml.tpl`（模板）
+- [x] `README.md`（安装、使用、端口、外网同步说明）
+- [x] `build/assemble.sh` / `build/make-icon.ps1`（组装与图标辅助脚本）
+- [x] `build/build-all.sh`（一键串联 export→assemble→check→pack）
+- [ ] `ugcli check` / `ugcli pack` 实测（需在 Debian 12 打包机执行 `./build-all.sh`）

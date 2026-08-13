@@ -1,52 +1,119 @@
 # Syncthing for UGOS Pro
 
-将 [Syncthing](https://github.com/syncthing/syncthing) 封装为绿联 NAS（UGOS Pro）Docker 应用的工程。
+将 [Syncthing](https://github.com/syncthing/syncthing) 封装为绿联 NAS（UGOS Pro）**Docker 应用**的安装包（`.upk`）。
 
-- 平台规范来源：<https://developer.ugnas.com/doc/backend/quick-start/develop-docker-app.html>
-- 系统基础环境：<https://github.com/ugreen-opensource/ugospro-debian12>（UGOS Pro 基于 Debian 12）
-- 应用形态：**Docker 应用**（`project.yaml` + `docker-compose.yaml` + 多架构镜像 tar）
+- 应用 ID：`com.syncthing.docker.syncthing`
+- 版本：跟随上游 `1.27.0`
+- 形态：Docker 应用（复用官方多架构镜像 `syncthing/syncthing`）
+- 最低依赖：固件 `1.13.0.0000`、Docker 套件 `1.7.0.0000`
 
-## 文档
+## 特性
 
-规范文档集位于 [`docs/specs/`](./docs/specs/)：
+- 开源持续文件同步，跨设备点对点加密传输
+- 对外暴露 Syncthing 原生 Web GUI（端口 `8384`），`open_type: tab` 浏览器打开
+- 支持 `amd64` / `arm64` 双架构
+- 非 root 运行（通过 `PUID`/`PGID` 对齐宿主机权限）
+- 用户可授权同步目录（`allow_add_access_path: true`）
 
-| 文档 | 内容 |
-|------|------|
-| [00-overview.md](./docs/specs/00-overview.md) | 总览、索引、待确认项 |
-| [01-project-structure.md](./docs/specs/01-project-structure.md) | 打包目录结构 |
-| [02-project-yaml.md](./docs/specs/02-project-yaml.md) | `project.yaml` 字段与取值 |
-| [03-docker-image.md](./docs/specs/03-docker-image.md) | 镜像、compose、安全红线 |
-| [04-runtime-env.md](./docs/specs/04-runtime-env.md) | 运行环境、目录、权限 |
-| [05-app-lifecycle.md](./docs/specs/05-app-lifecycle.md) | 启停、端口、配置、打开方式 |
-| [06-build-pack.md](./docs/specs/06-build-pack.md) | ugcli 构建与打包 |
-| [07-syncthing-design.md](./docs/specs/07-syncthing-design.md) | 适配设计决策与待确认项 |
-
-## 开发态结构
+## 目录结构
 
 ```
 syncthing-ugos/
-├── docs/specs/            # 规范文档集
-├── build/                 # 构建脚本（导出镜像、渲染 compose）
-├── assets/icon.png        # 应用图标源
-├── project.yaml           # 应用元数据
+├── docs/specs/                 # 平台规范与适配设计文档
+├── build/                      # 构建脚本
+│   ├── export-images.sh        # 导出 amd64/arm64 镜像 tar
+│   ├── assemble.sh             # 组装打包目录 (Linux 打包机)
+│   ├── make-icon.ps1           # 生成应用图标 (Windows)
+│   └── docker-compose.yaml.tpl # compose 模板
+├── assets/icon.png             # 应用图标 (512×512)
+├── project.yaml                # 应用元数据
 └── README.md
 ```
 
-## 当前进度
+打包产物目录（由脚本生成）：
 
-仓库目前**仅含规范文档**，实现文件（见 [`07-syncthing-design.md` 7.7](./docs/specs/07-syncthing-design.md#77-后续实现清单规范落地)）尚未创建。
+```
+com.syncthing.docker.syncthing/
+├── project.yaml
+├── rootfs_common/
+│   ├── icon.png
+│   └── docker-compose.yaml
+├── rootfs_amd64/images/*.tar
+└── rootfs_arm64/images/*.tar
+```
 
-## 快速构建（实现后）
+## 构建流程
+
+开发机为 Windows，打包机为 Debian 12（Linux）。
+
+### 1. 生成图标（Windows）
+
+```powershell
+powershell -ExecutionPolicy Bypass -File build/make-icon.ps1
+```
+
+### 2. 导出镜像 tar（Linux 打包机，需 Docker + buildx）
 
 ```bash
-# 1. 导出多架构镜像 tar
-bash build/export-images.sh
+cd build
+./export-images.sh 1.27.0 amd64 arm64
+```
 
-# 2. 组装打包目录并提交 ugcli 校验
+导出 `syncthing/syncthing:1.27.0` 的 amd64/arm64 两套 tar 到
+`com.syncthing.docker.syncthing/rootfs_*/images/`，并渲染 compose。
+
+### 3. 组装打包目录（Linux 打包机）
+
+```bash
+cd build
+./assemble.sh
+```
+
+将 `project.yaml`、`icon.png`、渲染后的 `docker-compose.yaml`
+复制到 `rootfs_common/`。
+
+### 4. 校验与打包
+
+```bash
 ugcli check
-
-# 3. 打包
 ugcli pack --arch all --build 1
 ```
 
-产物：`{arch}_com.syncthing.docker.syncthing_{version}.{build}.upk`，经 NAS 应用中心安装。
+产物：`build_dir/pkgs/upk/{arch}_com.syncthing.docker.syncthing_1.27.0.1.upk`
+
+## 端口说明
+
+| 端口 | 用途 | 远程访问 |
+|------|------|----------|
+| 8384 | Web GUI（管理界面） | 是（系统代理 + UGREENlink） |
+| 22000/tcp+udp | 设备间同步传输 | 否（仅直连/局域网） |
+| 21027/udp | 本地网络发现 | 否 |
+
+> 远程访问仅覆盖 8384。外网设备同步建议：
+> - 通过 UGREENlink 的 8384 端口中继 GUI；
+> - 或在路由器转发 22000/21027，或使用 Syncthing 公共中继服务器。
+
+## 配置项（parameters）
+
+| Key | 类型 | 说明 |
+|-----|------|------|
+| `GUI_PASSWORD` | password | Web GUI 登录密码（必填，可改） |
+| `PUID` | number | 容器内文件归属用户 ID |
+| `PGID` | number | 容器内文件归属用户组 ID |
+| `TZ` | string | 时区，如 `Asia/Shanghai` |
+
+修改 `changeable: true` 的项后需重启应用生效。
+
+## 同步目录
+
+- 应用数据（配置 + 默认库）挂载到 `./data` → 容器内 `/var/syncthing`，卸载时随应用清理；
+- 用户授权目录由系统注入环境变量 `UGAPP_SHARED_DIR`（需 `allow_add_access_path: true`，在应用设置中授权文件夹），挂载为容器内 `/var/syncthing/Sync` 作为默认同步库；
+- 容器内以非 root 用户 `syncthing` 运行，通过 `PUID`/`PGID` 对齐宿主机权限，请确保授权目录对该用户可写。
+
+## 规范文档
+
+详见 `docs/specs/`：`01-project-structure` ~ `07-syncthing-design`。
+
+## 许可证
+
+Syncthing 遵循 MPL-2.0。本封装项目遵循相同许可。

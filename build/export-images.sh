@@ -3,11 +3,11 @@
 # Syncthing for UGOS Pro — 导出多架构镜像 tar
 #
 # 功能:
-#   1. 拉取/构建指定版本的 syncthing/syncthing 镜像
-#   2. 分别按 amd64 / arm64 导出为独立 .tar (单 tag)
-#   3. 渲染 docker-compose.yaml.tpl 到 rootfs_common/
+#   1. 按架构分别拉取 syncthing/syncthing 单平台镜像
+#   2. 导出为独立 .tar (单 tag、单平台)，符合 UPK 镜像规范
 #
 # 规范: docs/specs/03-docker-image.md, docs/specs/06-build-pack.md
+# 注意: 本脚本只负责镜像导出；compose 渲染由 assemble.sh 完成。
 #
 # 用法:
 #   ./export-images.sh [VERSION] [ARCH...]
@@ -31,7 +31,6 @@ ARCHS=("${@:-amd64 arm64}")
 
 # 打包目录(组装到 rootfs_*) — 与 ugcli pack 约定的根目录名一致
 PKG_ROOT="${PROJECT_ROOT}/com.syncthing.docker.syncthing"
-COMMON_DIR="${PKG_ROOT}/rootfs_common"
 AMD64_DIR="${PKG_ROOT}/rootfs_amd64/images"
 ARM64_DIR="${PKG_ROOT}/rootfs_arm64/images"
 
@@ -41,11 +40,7 @@ log() { echo "[export-images] $*"; }
 err() { echo "[export-images][ERROR] $*" >&2; }
 
 # ---- 前置检查 ----
-command -v docker >/dev/null 2>&1 || { err "未找到 docker，请先安装 Docker(含 buildx)"; exit 1; }
-
-# ---- 拉取镜像(多架构 manifest) ----
-log "拉取镜像 ${IMAGE_FULL}"
-docker pull "${IMAGE_FULL}"
+command -v docker >/dev/null 2>&1 || { err "未找到 docker，请先安装 Docker"; exit 1; }
 
 # ---- 逐架构导出 ----
 mkdir -p "${AMD64_DIR}" "${ARM64_DIR}"
@@ -71,30 +66,31 @@ for arch in "${ARCHS[@]}"; do
   tar_name="syncthing-${VERSION}-${suffix}.tar"
   tar_path="${out_dir}/${tar_name}"
 
+  log "拉取单平台镜像 ${plat} -> ${IMAGE_FULL}"
+  # --platform 确保只拉取目标架构的镜像，避免多架构 manifest
+  docker pull --platform "${plat}" "${IMAGE_FULL}"
+
   log "导出 ${plat} -> ${tar_path}"
-  # 单 tag: 直接 save 当前 IMAGE_FULL；buildx 仅用于跨架构拉取/构建
-  if docker buildx >/dev/null 2>&1; then
-    # 优先用 buildx 确保目标架构存在(多架构镜像可直接 save 对应平台)
-    docker buildx imagetools inspect "${IMAGE_FULL}" >/dev/null 2>&1 || true
-  fi
-  # docker save 会保留 IMAGE_FULL 这一个 tag
   docker save "${IMAGE_FULL}" -o "${tar_path}"
 
-  # 校验: tar 内应仅含一个 tag
-  tag_count=$(tar -xf "${tar_path}" -O manifest.json 2>/dev/null \
-    | grep -o '"RepoTags"' -A0 | wc -l || echo 0)
-  log "已导出: ${tar_path} (tag=${IMAGE_FULL})"
+  # 校验: tar 内必须且仅含一个 tag，且与 compose 中 image: 完全一致
+  manifest="$(tar -xf "${tar_path}" -O manifest.json 2>/dev/null)"
+  tag_count="$(printf '%s' "${manifest}" | grep -o '"RepoTags"' | wc -l)"
+  if [ "${tag_count}" -ne 1 ]; then
+    err "校验失败: ${tar_path} 含 ${tag_count} 个 RepoTags(应仅 1 个)"
+    exit 1
+  fi
+  first_tag="$(printf '%s' "${manifest}" \
+    | grep -o '"RepoTags":\[[^]]*\]' | head -1 \
+    | sed -E 's/"RepoTags":\["([^"]*)"\]/\1/')"
+  if [ "${first_tag}" != "${IMAGE_FULL}" ]; then
+    err "校验失败: tar 内 tag='${first_tag}' 与期望 '${IMAGE_FULL}' 不一致"
+    exit 1
+  fi
+  log "已导出并通过校验: ${tar_path} (tag=${IMAGE_FULL}, 单平台 ${plat})"
 done
-
-# ---- 渲染 docker-compose.yaml ----
-log "渲染 docker-compose.yaml -> ${COMMON_DIR}/docker-compose.yaml"
-mkdir -p "${COMMON_DIR}"
-sed "s|\${SYNCTHING_IMAGE}|${IMAGE_FULL}|g" \
-  "${SCRIPT_DIR}/docker-compose.yaml.tpl" \
-  > "${COMMON_DIR}/docker-compose.yaml"
 
 log "完成。镜像 tar 位于:"
 log "  ${AMD64_DIR}"
 log "  ${ARM64_DIR}"
-log "compose 位于: ${COMMON_DIR}/docker-compose.yaml"
-log "下一步: 将 assets/icon.png 复制到 ${COMMON_DIR}/，然后执行 ugcli check / ugcli pack"
+log "下一步: 运行 ./assemble.sh 组装目录，再执行 ugcli check / ugcli pack"
