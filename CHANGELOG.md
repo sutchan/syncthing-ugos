@@ -2,6 +2,12 @@
 
 本项目遵循语义化版本（应用版本 `x.y.z` 取自上游 Syncthing，UPK 包版本为 `应用版本.构建号`）。
 
+## [1.27.0.4] - 2026-08-13
+
+### 修复
+- `build/export-images.sh` 镜像 tag 优先读取 `project.yaml` 的 `x_image_tag`，与 `assemble.sh` 共用同一真相源，脚本参数仅作覆盖。
+- 修正 `docs/DEVELOPMENT.md`、`docs/OPS.md` 中过时的版本变量说明，统一指向 `x_image_tag`。
+
 ## [1.27.0.3] - 2026-08-13
 
 ### 修复

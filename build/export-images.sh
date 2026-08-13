@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# export-images.sh v1.0.3
+# export-images.sh v1.0.4
 # Syncthing for UGOS Pro — 导出多架构镜像 tar
 #
 # 功能:
@@ -25,7 +25,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 IMAGE_BASE="docker.io/syncthing/syncthing"
-VERSION="${1:-1.27.0}"
+# 镜像 tag 真相源: 优先脚本参数 $1，否则读 project.yaml 的 x_image_tag，再回退 1.27.0
+PROJECT_YAML="${PROJECT_ROOT}/project.yaml"
+ARG_TAG="${1:-}"
+if [ -z "${ARG_TAG}" ]; then
+  ARG_TAG="$(grep -E '^x_image_tag:' "${PROJECT_YAML}" | head -1 | awk '{print $2}' | tr -d '"')"
+fi
+VERSION="${ARG_TAG:-1.27.0}"
 shift || true
 ARCHS=("${@:-amd64 arm64}")
 

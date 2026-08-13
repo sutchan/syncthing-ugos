@@ -96,5 +96,5 @@ SYNCTHING_IMAGE=docker.io/syncthing/syncthing:1.27.0 ./build/assemble.sh amd64
 ## 9. 常见问题
 
 - **`ugcli: command not found`**：未安装或未加入 PATH，按平台文档安装。
-- **镜像 tar 校验失败**：确认 `SYNCTHING_IMAGE` 与 `export-images.sh` 中 `IMAGE_FULL` 完全一致，且未使用 `latest` 标签。
+- **镜像 tar 校验失败**：确认 `project.yaml` 的 `x_image_tag` 与导出的镜像 tag 一致，且未使用 `latest` 标签；`export-images.sh` 与 `assemble.sh` 均以此字段为镜像 tag 真相源。
 - **权限拒绝**：检查挂载目录对 `PUID`/`PGID` 可写，或显式设置 `PUID`/`PGID`。

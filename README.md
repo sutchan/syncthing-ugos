@@ -4,7 +4,7 @@
 
 - 应用 ID：`com.syncthing.docker.syncthing`
 - 应用版本：跟随上游 `1.27.0`
-- UPK 包版本：`1.27.0.3`（应用版本 + 构建号 3，见 `VERSION`）
+- UPK 包版本：`1.27.0.4`（应用版本 + 构建号 4，见 `VERSION`）
 - 形态：Docker 应用（复用官方多架构镜像 `syncthing/syncthing`）
 - 最低依赖：固件 `1.13.0.0000`、Docker 套件 `1.7.0.0000`
 
@@ -96,7 +96,7 @@ ugcli check
 ugcli pack --arch all --build 2
 ```
 
-产物：`build_dir/pkgs/upk/{arch}_com.syncthing.docker.syncthing_1.27.0.3.upk`
+产物：`build_dir/pkgs/upk/{arch}_com.syncthing.docker.syncthing_1.27.0.4.upk`
 
 ## 端口说明
 

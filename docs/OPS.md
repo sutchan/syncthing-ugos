@@ -56,7 +56,7 @@ tar czf syncthing-data-$(date +%F).tar.gz \
 
 升级 Syncthing 镜像版本（如 1.27.0 → 1.28.0）步骤：
 
-1. 更新 `build/export-images.sh` / `build-all.sh` 中的版本变量；
+1. 更新 `project.yaml` 的 `x_image_tag`（镜像 tag 真相源，与 `version` 解耦）；
 2. 重新导出镜像 tar、重新打包 `.upk`；
 3. 应用中心升级安装；
 4. 观察日志确认索引迁移成功（Syncthing 升级通常自动迁移数据库）。
