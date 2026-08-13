@@ -8,6 +8,17 @@
 - 形态：Docker 应用（复用官方多架构镜像 `syncthing/syncthing`）
 - 最低依赖：固件 `1.13.0.0000`、Docker 套件 `1.7.0.0000`
 
+## 文档
+
+| 文档 | 说明 |
+|------|------|
+| [README.md](./README.md) | 项目说明、构建与配置 |
+| [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) | 开发/构建/打包/调试指南 |
+| [docs/specs/](./docs/specs/) | 绿联 UPK 平台规范文档（`00`~`08`） |
+| [CHANGELOG.md](./CHANGELOG.md) | 版本变更记录 |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | 贡献指南 |
+| [LICENSE](./LICENSE) | MPL-2.0（与上游 Syncthing 一致） |
+
 ## 特性
 
 - 开源持续文件同步，跨设备点对点加密传输
