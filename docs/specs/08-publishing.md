@@ -10,6 +10,27 @@
 - 已完成 `ugcli pack`，产出 `.upk` 安装包（见 [06-build-pack.md](./06-build-pack.md)）；
 - 已获得绿联开发者授权（见 8.2）。
 
+### 8.1.1 本地构建环境（绿联 DX4600 / UGOS Pro）
+
+DX4600 底层即 Debian 12 且自带 Docker 套件，可直接在其上起一个挂载宿主
+`/var/run/docker.sock` 的 `debian:bookworm` 容器作为构建机，复用宿主 Docker
+守护进程导出镜像 tar（无需 Docker-in-Docker）。
+
+```bash
+# 在 DX4600 的 SSH / Docker 套件终端执行
+./build/dx4600-build-env.sh /volume1/@appdata/syncthing-ugos /volume1/@appdata/ugos-build
+
+# 进入容器并构建
+docker exec -it ugos-build bash
+cd /repo
+./build/build-all.sh 1.27.0 2 amd64 arm64
+# 产物: build_dir/pkgs/upk/{arch}_com.syncthing.docker.syncthing_1.27.0.2.upk
+```
+
+前置依赖（容器内脚本已自动安装 git/curl/jq/imagemagick；需你自备）：
+- `ugcli` Linux x86_64 二进制，放入容器 `PATH`；
+- `ugdev.sig` 开发者授权，按 8.2 上传到管理员个人文件夹。
+
 ## 8.2 开发者授权（ugdev.sig）
 
 - 向绿联官方提供设备 **序列号、MAC 地址、管理员用户名**；

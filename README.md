@@ -14,6 +14,8 @@
 |------|------|
 | [README.md](./README.md) | 项目说明、构建与配置 |
 | [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) | 开发/构建/打包/调试指南 |
+| [docs/OPS.md](./docs/OPS.md) | 运维与故障排查手册 |
+| [docs/SECURITY.md](./docs/SECURITY.md) | 安全说明与暴露风险 |
 | [docs/specs/](./docs/specs/) | 绿联 UPK 平台规范文档（`00`~`08`） |
 | [CHANGELOG.md](./CHANGELOG.md) | 版本变更记录 |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | 贡献指南 |
@@ -36,6 +38,7 @@ syncthing-ugos/
 │   ├── export-images.sh        # 导出 amd64/arm64 镜像 tar
 │   ├── assemble.sh             # 组装打包目录 (Linux 打包机)
 │   ├── build-all.sh            # 一键串联 export→assemble→check→pack
+│   ├── dx4600-build-env.sh     # 在绿联 DX4600 一键起 Debian 12 构建容器
 │   ├── make-icon.ps1           # 生成应用图标 (Windows)
 │   └── docker-compose.yaml.tpl # compose 模板
 ├── assets/icon.png             # 应用图标 (512×512)
@@ -57,7 +60,18 @@ com.syncthing.docker.syncthing/
 
 ## 构建流程
 
-开发机为 Windows，打包机为 Debian 12（Linux）。
+开发机为 Windows，打包机为 Debian 12（Linux）。绿联 DX4600（UGOS Pro）底层即 Debian 12 且自带 Docker，可直接在其上起构建容器。
+
+### 0. 创建构建环境（绿联 DX4600）
+
+在 DX4600 的 SSH / Docker 套件终端执行，一键起挂载宿主 `docker.sock` 的 Debian 12 容器：
+
+```bash
+./build/dx4600-build-env.sh /volume1/@appdata/syncthing-ugos /volume1/@appdata/ugos-build
+docker exec -it ugos-build bash
+```
+
+进入容器后，需自行放入 `ugcli` 二进制（及 `ugdev.sig`，详见 `docs/specs/08-publishing.md` §8.2）。
 
 ### 1. 生成图标（Windows）
 
@@ -65,31 +79,21 @@ com.syncthing.docker.syncthing/
 powershell -ExecutionPolicy Bypass -File build/make-icon.ps1
 ```
 
-### 2. 导出镜像 tar（Linux 打包机，需 Docker + buildx）
+### 2. 一键构建（构建容器内）
 
 ```bash
-cd build
-./export-images.sh 1.27.0 amd64 arm64
+cd /repo
+./build/build-all.sh 1.27.0 2 amd64 arm64
 ```
 
-导出 `syncthing/syncthing:1.27.0` 的 amd64/arm64 两套 tar 到
-`com.syncthing.docker.syncthing/rootfs_*/images/`，并渲染 compose。
+脚本自动完成：导出 `syncthing/syncthing:1.27.0` 的 amd64/arm64 两套 tar → 组装打包目录 → `ugcli check` → `ugcli pack --arch all --build 2`。
+（亦可在 Linux 打包机分步执行 `export-images.sh` / `assemble.sh` / `ugcli check` / `ugcli pack`。）
 
-### 3. 组装打包目录（Linux 打包机）
-
-```bash
-cd build
-./assemble.sh
-```
-
-将 `project.yaml`、`icon.png`、渲染后的 `docker-compose.yaml`
-复制到 `rootfs_common/`。
-
-### 4. 校验与打包
+### 3. 校验与打包（手动分步，等价于一键）
 
 ```bash
 ugcli check
-ugcli pack --arch all --build 1
+ugcli pack --arch all --build 2
 ```
 
 产物：`build_dir/pkgs/upk/{arch}_com.syncthing.docker.syncthing_1.27.0.2.upk`

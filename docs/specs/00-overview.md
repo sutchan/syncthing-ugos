@@ -2,7 +2,7 @@
 
 > 本目录（`docs/specs/`）汇总将 [Syncthing](https://github.com/syncthing/syncthing) 封装为绿联 NAS（UGOS Pro）Docker 应用所需遵循的全部平台规范，以及本项目的适配设计决策。
 
-- 文档版本：v1.1.0
+- 文档版本：v1.2.0
 - 适用平台：UGOS Pro（最低依赖固件 `1.13.0.0000`、Docker 套件 `1.7.0.0000`）
 - 上游项目：<https://github.com/syncthing/syncthing>
 - 平台规范来源：<https://developer.ugnas.com/doc/backend/quick-start/develop-docker-app.html>
@@ -22,6 +22,14 @@
 | [07-syncthing-design.md](./07-syncthing-design.md) | 本项目针对 Syncthing 的适配设计决策与待确认项 |
 | [08-publishing.md](./08-publishing.md) | 发布/上架流程、开发者授权、版本迭代 |
 
+### 项目级文档（位于 `docs/` 根目录，非平台规范）
+
+| 文档 | 内容 |
+|------|------|
+| [../DEVELOPMENT.md](../DEVELOPMENT.md) | 开发/构建/打包/调试指南 |
+| [../OPS.md](../OPS.md) | 运维与故障排查手册 |
+| [../SECURITY.md](../SECURITY.md) | 安全说明与暴露风险 |
+
 ## 关键结论速览
 
 1. **采用 Docker 应用形态**：使用 `project.yaml` + `rootfs_common/docker-compose.yaml` + 各架构 `images/*.tar`，而非原生二进制形态。
@@ -35,16 +43,14 @@
 6. **应用对外端口**需在 `project.yaml` 的 `port` 声明固定端口，系统据此分配 HTTP/HTTPS 代理端口并支持 UGREENlink 远程访问。
 7. **发布上架**：本地测试通过后邮件提交 `.upk` 给官方审核；上架前需申请 `ugdev.sig` 开发者授权（序列号/MAC/管理员用户名）。详见 [08-publishing.md](./08-publishing.md)。
 
-## 待确认 / 待完善建议
+## 待确认 / 待验证事项
 
-编写实现代码前，建议先与平台 / 上游对齐以下事项（详见 [07-syncthing-design.md](./07-syncthing-design.md)）：
+设计层面 9 项决策已在 [07-syncthing-design.md](./07-syncthing-design.md) 第 7.6 节给出明确结论。仅以下两项的最终合法性**仍待打包机实测**：
 
-- **图标 `icon.png` 规格**（尺寸、分辨率、透明通道）官方文档未明确，建议取 512×512 PNG。
-- **是否启用 UGOS 登录认证**：Syncthing 自带账号体系，`open_type` 建议用 `tab` 直接暴露其 Web UI，不强制接入 JSSDK；如要接入需 `inner` + `proxy_path`。
-- **默认管理员密码策略**：首次启动应强制设置密码或生成随机密码并落盘到 `data`，避免空密码暴露。
-- **`only_admin` 取值**：Syncthing 属系统级同步工具，建议 `true`（仅管理员可配置）。
-- **`depend_fw_version` / `depend_docker_version`** 以文档所述最低版本为基线，可按目标固件微调。
-- **跨架构镜像来源**：优先复用 Syncthing 官方多架构镜像（`syncthing/syncthing`），`docker save` 时分别按 amd64/arm64 导出。
+- **`start_cmd` 实际语义**：Docker 应用下该字段是否为占位，以 `ugcli check` 实测为准。
+- **`open_type: tab` + 省略 `proxy_path` 组合**：是否被正确支持，需 `ugcli check` / `ugcli pack` 验证。
+
+> 其余事项（图标规格、GUI 密码策略、only_admin、依赖版本基线、同步端口远程访问、多语言、版本号策略）均已确认并记录于 07 第 7.6 节。
 
 ## 版本说明
 
