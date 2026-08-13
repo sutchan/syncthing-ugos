@@ -1,0 +1,84 @@
+# project.yaml v1.0.0
+# Syncthing for UGOS Pro — 应用元数据
+# 规范: docs/specs/02-project-yaml.md
+spec_version: "2.1"
+app_id: com.syncthing.docker.syncthing
+version: 1.27.0
+support_arch:
+  - amd64
+  - arm64
+supports:
+  - app
+  - pc
+start_cmd: docker-compose up -d   # 占位；实际由系统按 compose 拉起
+port: 8384                         # Syncthing Web GUI 默认端口
+proxy_path: ""                     # 不接入系统代理，直接暴露 GUI
+open_type: tab                     # 浏览器标签打开 Syncthing 原生 UI
+tag_types:
+  - utility
+  - backup
+depend_fw_version: 1.13.0.0000
+is_docker_app: true
+depend_docker_version: 1.7.0.0000
+only_admin: true
+allow_add_access_path: true        # 允许用户授权同步目录
+permissions:
+  - NETWORK.ACCESS_INTERNET
+parameters:
+  - key: GUI_PASSWORD
+    type: password
+    required: true
+    changeable: true
+    i18n:
+      en-US:
+        name: GUI Password
+        description: Password for Syncthing Web GUI
+      zh-CN:
+        name: GUI 管理密码
+        description: Syncthing Web 管理界面登录密码
+  - key: PUID
+    type: number
+    required: false
+    changeable: true
+    i18n:
+      en-US:
+        name: User ID
+        description: UID for files ownership inside container
+      zh-CN:
+        name: 用户 ID
+        description: 容器内文件归属的用户 ID
+  - key: PGID
+    type: number
+    required: false
+    changeable: true
+    i18n:
+      en-US:
+        name: Group ID
+        description: GID for files ownership inside container
+      zh-CN:
+        name: 用户组 ID
+        description: 容器内文件归属的用户组 ID
+  - key: TZ
+    type: string
+    required: false
+    changeable: true
+    i18n:
+      en-US:
+        name: Timezone
+        description: Container timezone, e.g. Asia/Shanghai
+      zh-CN:
+        name: 时区
+        description: 容器内时区，如 Asia/Shanghai
+i18n:
+  en-US:
+    name: Syncthing
+    description: Open-source continuous file synchronization
+    author: Syncthing Community
+    official: https://syncthing.net
+    help: https://docs.syncthing.net
+  zh-CN:
+    name: Syncthing
+    description: 开源的持续文件同步工具
+    author: Syncthing 社区
+    official: https://syncthing.net
+    help: https://docs.syncthing.net
