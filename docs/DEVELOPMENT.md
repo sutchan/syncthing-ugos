@@ -42,12 +42,12 @@ powershell -ExecutionPolicy Bypass -File build/make-icon.ps1
 ## 4. 一键构建与打包（Linux）
 
 ```bash
-# 用法: ./build/build-all.sh <syncthing_version> <archs> <build>
-#   syncthing_version: 上游版本，如 1.27.0
-#   archs:             amd64,arm64 或 all
-#   build:             构建号（整数）
+# 用法: ./build/build-all.sh [VERSION] [BUILD] [ARCH...]
+#   VERSION: 上游版本，如 1.27.0（默认 1.27.0）
+#   BUILD:   构建号（整数，默认 1）
+#   ARCH:    amd64 / arm64（可多值，默认 amd64 arm64）
 
-./build/build-all.sh 1.27.0 amd64,arm64 1
+./build/build-all.sh 1.27.0 1 amd64 arm64
 ```
 
 脚本依次执行：

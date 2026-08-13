@@ -66,4 +66,5 @@
 - [x] `README.md`（安装、使用、端口、外网同步说明）
 - [x] `build/assemble.sh` / `build/make-icon.ps1`（组装与图标辅助脚本）
 - [x] `build/build-all.sh`（一键串联 export→assemble→check→pack）
+- [x] `build/dx4600-build-env.sh`（DX4600 上创建 Debian 12 构建容器，复用宿主 docker.sock）
 - [ ] `ugcli check` / `ugcli pack` 实测（需在 Debian 12 打包机执行 `./build-all.sh`）

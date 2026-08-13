@@ -2,6 +2,14 @@
 
 本项目遵循语义化版本（应用版本 `x.y.z` 取自上游 Syncthing，UPK 包版本为 `应用版本.构建号`）。
 
+## [1.27.0.5] - 2026-08-13
+
+### 文档
+- 新增 `docs/README.md` 文档导航索引，统一 specs 规范文档与项目级文档入口。
+- 修正 `docs/DEVELOPMENT.md` 中 `build-all.sh` 参数顺序，与脚本签名 `[VERSION] [BUILD] [ARCH...]` 一致。
+- 同步 `docs/specs/00-overview.md` 待确认事项：`start_cmd` 语义与 `open_type: tab` + 省略 `proxy_path` 组合已在 `07` 第 7.6 节正式确认，自待确认清单移除。
+- 补全 `docs/specs/07-syncthing-design.md` 实现清单遗漏的 `build/dx4600-build-env.sh`。
+
 ## [1.27.0.4] - 2026-08-13
 
 ### 修复

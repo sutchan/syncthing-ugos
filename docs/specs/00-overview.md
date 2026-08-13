@@ -26,6 +26,7 @@
 
 | 文档 | 内容 |
 |------|------|
+| [../README.md](../README.md) | 文档导航索引（本目录总入口） |
 | [../DEVELOPMENT.md](../DEVELOPMENT.md) | 开发/构建/打包/调试指南 |
 | [../OPS.md](../OPS.md) | 运维与故障排查手册 |
 | [../SECURITY.md](../SECURITY.md) | 安全说明与暴露风险 |
@@ -45,12 +46,13 @@
 
 ## 待确认 / 待验证事项
 
-设计层面 9 项决策已在 [07-syncthing-design.md](./07-syncthing-design.md) 第 7.6 节给出明确结论。仅以下两项的最终合法性**仍待打包机实测**：
+设计层面 9 项决策已在 [07-syncthing-design.md](./07-syncthing-design.md) 第 7.6 节全部给出明确结论（含 `start_cmd` 留空语义、`open_type: tab` + 省略 `proxy_path` 组合的合规性），**无遗留设计待确认项**。
 
-- **`start_cmd` 实际语义**：Docker 应用下该字段是否为占位，以 `ugcli check` 实测为准。
-- **`open_type: tab` + 省略 `proxy_path` 组合**：是否被正确支持，需 `ugcli check` / `ugcli pack` 验证。
+仅剩的收尾动作为打包机实测验证（非设计待确认）：
 
-> 其余事项（图标规格、GUI 密码策略、only_admin、依赖版本基线、同步端口远程访问、多语言、版本号策略）均已确认并记录于 07 第 7.6 节。
+- 在 Debian 12 打包机执行 `ugcli check` / `ugcli pack`，确认 `project.yaml` 与 `rootfs_*` 目录结构、镜像 tar 被平台正确接受（见 07 第 7.7 节实现清单）。
+
+> 自 v1.2.0 起，原「`start_cmd` 语义」「`open_type: tab` + 省略 `proxy_path`」两条待确认项的合法性已由 07 第 7.6 节依据 `02-project-yaml.md` 字段定义正式确认，自待确认清单移除。
 
 ## 版本说明
 
