@@ -1,7 +1,24 @@
-# 打包产物目录（由 build 脚本生成，非源码）
-/com.syncthing.docker.syncthing/
-/build_dir/
+# ===== 打包与构建产物 =====
+build_dir/
+dist/
+*.upk
 
-# 本地配置 / 临时文件
+# ===== 导出的镜像 tar（体积大，不入库） =====
+rootfs_amd64/images/
+rootfs_arm64/images/
+build/images/
+*.tar
+
+# ===== 组装产生的 rootfs 目录（由 assemble.sh 生成） =====
+rootfs_*/
+
+# ===== 本地/临时文件 =====
 *.log
+.cache/
 .DS_Store
+Thumbs.db
+
+# ===== 编辑器/IDE =====
+.vscode/
+.idea/
+*.swp
