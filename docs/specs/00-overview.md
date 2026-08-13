@@ -2,7 +2,7 @@
 
 > 本目录（`docs/specs/`）汇总将 [Syncthing](https://github.com/syncthing/syncthing) 封装为绿联 NAS（UGOS Pro）Docker 应用所需遵循的全部平台规范，以及本项目的适配设计决策。
 
-- 文档版本：v1.0.3
+- 文档版本：v1.1.0
 - 适用平台：UGOS Pro（最低依赖固件 `1.13.0.0000`、Docker 套件 `1.7.0.0000`）
 - 上游项目：<https://github.com/syncthing/syncthing>
 - 平台规范来源：<https://developer.ugnas.com/doc/backend/quick-start/develop-docker-app.html>
@@ -20,6 +20,7 @@
 | [05-app-lifecycle.md](./05-app-lifecycle.md) | 启停生命周期、端口、配置 parameters、open_type、登录认证 |
 | [06-build-pack.md](./06-build-pack.md) | ugcli 初始化、检查、打包命令与产物命名 |
 | [07-syncthing-design.md](./07-syncthing-design.md) | 本项目针对 Syncthing 的适配设计决策与待确认项 |
+| [08-publishing.md](./08-publishing.md) | 发布/上架流程、开发者授权、版本迭代 |
 
 ## 关键结论速览
 
@@ -32,6 +33,7 @@
 4. **安全红线**：禁用 `privileged`、`cap_add`、`host` 网络/PID/IPC；镜像不得用 `latest`。
 5. **运行身份非 root**：Syncthing 官方镜像已支持以非 root 运行，需显式配置 `PUID/PGID` 与数据卷目录权限。
 6. **应用对外端口**需在 `project.yaml` 的 `port` 声明固定端口，系统据此分配 HTTP/HTTPS 代理端口并支持 UGREENlink 远程访问。
+7. **发布上架**：本地测试通过后邮件提交 `.upk` 给官方审核；上架前需申请 `ugdev.sig` 开发者授权（序列号/MAC/管理员用户名）。详见 [08-publishing.md](./08-publishing.md)。
 
 ## 待确认 / 待完善建议
 

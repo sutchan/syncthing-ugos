@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# assemble.sh v1.0.0
+# assemble.sh v1.0.1
 # Syncthing for UGOS Pro — 组装打包目录
 #
 # 功能: 将 project.yaml / icon.png / docker-compose.yaml 组装到
@@ -53,6 +53,11 @@ log "复制 icon.png -> ${ICON_DST}"
 
 # 3. 渲染 compose
 sed "s|\${SYNCTHING_IMAGE}|${IMAGE_FULL}|g" "${COMPOSE_TPL}" > "${COMPOSE_DST}"
+# 校验: 渲染后应无残留的 ${SYNCTHING_IMAGE} 占位符
+if grep -q '\${SYNCTHING_IMAGE}' "${COMPOSE_DST}"; then
+  err "渲染失败: ${COMPOSE_DST} 仍残留 \${SYNCTHING_IMAGE} 占位符"
+  exit 1
+fi
 log "渲染 docker-compose.yaml -> ${COMPOSE_DST} (image=${IMAGE_FULL})"
 
 log "组装完成: ${PKG_ROOT}"

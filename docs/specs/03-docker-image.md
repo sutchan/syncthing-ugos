@@ -44,7 +44,7 @@ services:
     container_name: syncthing
     volumes:
       - ./data:/var/syncthing
-      - ${SYNC_PATH}:/var/syncthing/Sync
+      - ${UGAPP_SHARED_DIR}:/var/syncthing/Sync
     network_mode: bridge
     ports:
       - 8384:8384      # Web GUI
@@ -63,7 +63,7 @@ services:
 > 说明：
 > - `ports` 中 `8384` 为 `project.yaml` 声明的 `port`（GUI），须与之一致；
 > - 同步/发现端口（22000、21027）为 Syncthing 协议端口，系统不为其提供代理转发，仅局域网/直连可用；
-> - `${SYNC_PATH}` 来自 `parameters` 中声明的 `path` 类型配置项（见 [02-project-yaml.md](./02-project-yaml.md) 的 `SYNC_PATH`），由用户在应用设置页授权一个宿主目录；若不使用独立同步目录，可移除该挂载，数据默认存于 `./data`。
+> - `${UGAPP_SHARED_DIR}` 由平台在用户通过 `allow_add_access_path: true` 授权文件夹后注入，挂载为默认同步库 `/var/syncthing/Sync`；若用户未授权任何目录，该挂载为空，数据默认存于 `./data`。无需在 `parameters` 中声明额外 `path` 配置项。
 
 ## 3.3 安全红线（必须遵守）
 

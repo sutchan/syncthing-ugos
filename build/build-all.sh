@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# build-all.sh v1.0.0
+# build-all.sh v1.0.1
 # Syncthing for UGOS Pro — 一键构建 .upk
 #
 # 串联: 导出镜像 -> 组装目录 -> ugcli 校验 -> ugcli 打包
 # 环境:  Linux 打包机(Debian 12), 需 docker(buildx) + ugcli
 #
 # 用法:
-#   ./build-all.sh [VERSION] [ARCH...] [BUILD]
+#   ./build-all.sh [VERSION] [BUILD] [ARCH...]
 #   VERSION  镜像版本，默认 1.27.0
-#   ARCH     目标架构，默认 "amd64 arm64"
 #   BUILD    构建号，默认 1
+#   ARCH     目标架构，默认 "amd64 arm64"
 #
 # 说明:
 #   - 图标 assets/icon.png 需在 Windows 侧先运行 build/make-icon.ps1 生成，
@@ -21,17 +21,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 VERSION="${1:-1.27.0}"; shift || true
+BUILD="${1:-1}"; shift || true
 ARCH_ARG=("${@:-amd64 arm64}")
-# 取最后一个参数作为 BUILD(若传入数字)
-BUILD="1"
-if [ "${#ARCH_ARG[@]}" -gt 0 ]; then
-  last="${ARCH_ARG[${#ARCH_ARG[@]}-1]}"
-  if [[ "$last" =~ ^[0-9]+$ ]]; then
-    BUILD="$last"
-    unset 'ARCH_ARG[${#ARCH_ARG[@]}-1]'
-  fi
-fi
-[ "${#ARCH_ARG[@]}" -eq 0 ] && ARCH_ARG=(amd64 arm64)
 
 log() { echo "[build-all] $*"; }
 err() { echo "[build-all][ERROR] $*" >&2; }

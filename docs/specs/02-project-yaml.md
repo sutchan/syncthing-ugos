@@ -144,17 +144,6 @@ parameters:
       zh-CN:
         name: 时区
         description: 容器内时区，如 Asia/Shanghai
-  - key: SYNC_PATH
-    type: path
-    required: false
-    changeable: true
-    i18n:
-      en-US:
-        name: Sync Folder
-        description: Host directory to mount as the default sync folder
-      zh-CN:
-        name: 同步目录
-        description: 挂载为默认同步目录的宿主机路径
 i18n:
   en-US:
     name: Syncthing

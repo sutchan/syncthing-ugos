@@ -63,5 +63,5 @@ Syncthing 需跨设备同步，至少声明 `NETWORK.ACCESS_INTERNET`。默认�
 ## 4.5 非 root 运行要点（Syncthing）
 
 - 官方镜像默认以 `syncthing` 用户运行，容器内外权限通过 `PUID`/`PGID` 对齐；
-- 挂载的数据卷目录（`data`、`SYNC_PATH`）需保证对应 `PUID`/`PGID` 可写，避免权限拒绝；
+- 挂载的数据卷目录（`data`、`UGAPP_SHARED_DIR`）需保证对应 `PUID`/`PGID` 可写，避免权限拒绝；
 - 建议 `UMASK=022` 控制新建文件权限。

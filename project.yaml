@@ -1,4 +1,4 @@
-# project.yaml v1.0.0
+# project.yaml v1.0.2
 # Syncthing for UGOS Pro — 应用元数据
 # 规范: docs/specs/02-project-yaml.md
 spec_version: "2.1"
@@ -12,7 +12,6 @@ supports:
   - pc
 start_cmd: docker-compose up -d   # 占位；实际由系统按 compose 拉起
 port: 8384                         # Syncthing Web GUI 默认端口
-proxy_path: ""                     # 不接入系统代理，直接暴露 GUI
 open_type: tab                     # 浏览器标签打开 Syncthing 原生 UI
 tag_types:
   - utility
@@ -69,17 +68,6 @@ parameters:
       zh-CN:
         name: 时区
         description: 容器内时区，如 Asia/Shanghai
-  - key: SYNC_PATH
-    type: path
-    required: false
-    changeable: true
-    i18n:
-      en-US:
-        name: Sync Folder
-        description: Host directory to mount as the default sync folder
-      zh-CN:
-        name: 同步目录
-        description: 挂载为默认同步目录的宿主机路径
 i18n:
   en-US:
     name: Syncthing

@@ -3,7 +3,8 @@
 将 [Syncthing](https://github.com/syncthing/syncthing) 封装为绿联 NAS（UGOS Pro）**Docker 应用**的安装包（`.upk`）。
 
 - 应用 ID：`com.syncthing.docker.syncthing`
-- 版本：跟随上游 `1.27.0`
+- 应用版本：跟随上游 `1.27.0`
+- UPK 包版本：`1.27.0.2`（应用版本 + 构建号 2，见 `VERSION`）
 - 形态：Docker 应用（复用官方多架构镜像 `syncthing/syncthing`）
 - 最低依赖：固件 `1.13.0.0000`、Docker 套件 `1.7.0.0000`
 
@@ -23,6 +24,7 @@ syncthing-ugos/
 ├── build/                      # 构建脚本
 │   ├── export-images.sh        # 导出 amd64/arm64 镜像 tar
 │   ├── assemble.sh             # 组装打包目录 (Linux 打包机)
+│   ├── build-all.sh            # 一键串联 export→assemble→check→pack
 │   ├── make-icon.ps1           # 生成应用图标 (Windows)
 │   └── docker-compose.yaml.tpl # compose 模板
 ├── assets/icon.png             # 应用图标 (512×512)
@@ -79,7 +81,7 @@ ugcli check
 ugcli pack --arch all --build 1
 ```
 
-产物：`build_dir/pkgs/upk/{arch}_com.syncthing.docker.syncthing_1.27.0.1.upk`
+产物：`build_dir/pkgs/upk/{arch}_com.syncthing.docker.syncthing_1.27.0.2.upk`
 
 ## 端口说明
 
@@ -104,6 +106,8 @@ ugcli pack --arch all --build 1
 
 修改 `changeable: true` 的项后需重启应用生效。
 
+> 同步目录由用户在应用设置中授权（`allow_add_access_path: true`），系统以环境变量 `UGAPP_SHARED_DIR` 注入并挂载为容器内 `/var/syncthing/Sync`，无需在配置项中额外声明路径。
+
 ## 同步目录
 
 - 应用数据（配置 + 默认库）挂载到 `./data` → 容器内 `/var/syncthing`，卸载时随应用清理；
@@ -112,7 +116,7 @@ ugcli pack --arch all --build 1
 
 ## 规范文档
 
-详见 `docs/specs/`：`01-project-structure` ~ `07-syncthing-design`。
+详见 `docs/specs/`：`00-overview` ~ `08-publishing`（含平台规范、适配设计与发布上架流程）。
 
 ## 许可证
 

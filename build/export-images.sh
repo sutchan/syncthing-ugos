@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# export-images.sh v1.0.0
+# export-images.sh v1.0.2
 # Syncthing for UGOS Pro — 导出多架构镜像 tar
 #
 # 功能:
@@ -74,15 +74,25 @@ for arch in "${ARCHS[@]}"; do
   docker save "${IMAGE_FULL}" -o "${tar_path}"
 
   # 校验: tar 内必须且仅含一个 tag，且与 compose 中 image: 完全一致
-  manifest="$(tar -xf "${tar_path}" -O manifest.json 2>/dev/null)"
-  tag_count="$(printf '%s' "${manifest}" | grep -o '"RepoTags"' | wc -l)"
+  # 用 python3 解析 manifest.json 中 RepoTags 数组的真实 tag 数量（避免旧版按关键字计数误判）
+  if command -v python3 >/dev/null 2>&1; then
+    read -r tag_count first_tag < <(tar -xf "${tar_path}" -O manifest.json 2>/dev/null \
+      | python3 -c 'import sys,json
+m=json.load(sys.stdin)
+tags=[t for c in m for t in c.get("RepoTags",[])]
+print(len(tags), (tags[0] if tags else ""))')
+  else
+    # 退化方案: 提取 RepoTags 数组内的实际 tag 字符串并计数
+    manifest="$(tar -xf "${tar_path}" -O manifest.json 2>/dev/null)"
+    tags="$(printf '%s' "${manifest}" | grep -o '"RepoTags":\[[^]]*\]' | head -1 \
+      | sed -E 's/"RepoTags":\["?([^"]*)"?\]/\1/' | tr ',' '\n' | grep -v '^$')"
+    tag_count="$(printf '%s\n' "${tags}" | grep -c .)"
+    first_tag="$(printf '%s\n' "${tags}" | head -1)"
+  fi
   if [ "${tag_count}" -ne 1 ]; then
-    err "校验失败: ${tar_path} 含 ${tag_count} 个 RepoTags(应仅 1 个)"
+    err "校验失败: ${tar_path} 含 ${tag_count} 个 tag(应仅 1 个)"
     exit 1
   fi
-  first_tag="$(printf '%s' "${manifest}" \
-    | grep -o '"RepoTags":\[[^]]*\]' | head -1 \
-    | sed -E 's/"RepoTags":\["([^"]*)"\]/\1/')"
   if [ "${first_tag}" != "${IMAGE_FULL}" ]; then
     err "校验失败: tar 内 tag='${first_tag}' 与期望 '${IMAGE_FULL}' 不一致"
     exit 1
