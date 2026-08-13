@@ -88,7 +88,6 @@ supports:
   - pc
 start_cmd: docker-compose up -d   # 占位；实际由系统按 compose 拉起
 port: 8384                         # Syncthing Web GUI 默认端口
-proxy_path: ""                     # 不接入系统代理，直接暴露 GUI
 open_type: tab                     # 浏览器标签打开 Syncthing 原生 UI
 tag_types:
   - utility
@@ -145,6 +144,17 @@ parameters:
       zh-CN:
         name: 时区
         description: 容器内时区，如 Asia/Shanghai
+  - key: SYNC_PATH
+    type: path
+    required: false
+    changeable: true
+    i18n:
+      en-US:
+        name: Sync Folder
+        description: Host directory to mount as the default sync folder
+      zh-CN:
+        name: 同步目录
+        description: 挂载为默认同步目录的宿主机路径
 i18n:
   en-US:
     name: Syncthing
@@ -160,4 +170,4 @@ i18n:
     help: https://docs.syncthing.net
 ```
 
-> 说明：`start_cmd` 在 Docker 应用形态下由平台依据 `docker-compose.yaml` 拉起容器，字段值以平台实际要求为准（可填入服务名或占位命令）。`proxy_path` 留空表示不通过系统网关代理，直接以 `port` 暴露原生 UI（配合 `open_type: tab`）。
+> 说明：`start_cmd` 在 Docker 应用形态下由平台依据 `docker-compose.yaml` 拉起容器，字段值以平台实际要求为准（可填入服务名或占位命令）。本应用不设置 `proxy_path`（省略该字段），即不通过系统网关代理，直接以 `port` 暴露原生 UI（配合 `open_type: tab`）。
