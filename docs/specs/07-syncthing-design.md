@@ -43,16 +43,16 @@
 | # | 事项 | 状态 | 决策 |
 |---|------|------|------|
 | 1 | 图标规格 | 已确认（建议） | 512×512 PNG，透明背景（见 `build/make-icon.ps1`） |
-| 2 | `start_cmd` 语义 | 待 `ugcli check` 实测 | 当前按规范填占位；以平台校验结果为准 |
+| 2 | `start_cmd` 语义 | 已确认 | 规范 `02-project-yaml.md` 明确：Docker 应用留空 `""`，由系统按 `docker-compose.yaml` 拉起 |
 | 3 | GUI 密码策略 | 已确认 | 经 `GUI_PASSWORD` 参数注入，安装时必填，`changeable: true` |
 | 4 | `only_admin` | 已确认 | `true`（同步属系统级操作） |
 | 5 | 依赖版本基线 | 已确认 | `depend_fw_version: 1.13.0.0000`、`depend_docker_version: 1.7.0.0000` |
 | 6 | 同步端口远程访问 | 已确认 | 仅 8384 经系统代理；22000/21027 仅直连（见 `docs/OPS.md`） |
 | 7 | 多语言 | 已确认 | 至少 `en-US` + `zh-CN`；扩展见 `docs/specs/02` |
 | 8 | 版本号策略 | 已确认 | `version` 跟随 Syncthing 上游；UPK 包版本 `应用.构建号` |
-| 9 | `proxy_path` 留空 | 待 `ugcli check` 实测 | 已省略该字段（非空串），配合 `open_type: tab` |
+| 9 | `proxy_path` 留空 | 已确认 | `proxy_path` 为可选字段（规范标注「否」），`open_type: tab` 直接暴露原生 UI 时省略该字段符合规范 |
 
-> 结论：设计层面 9 项均已给出明确决策；仅第 2、9 两项的最终合法性需在 Debian 12 打包机执行 `ugcli check` / `ugcli pack` 实测确认。
+> 结论：设计层面 9 项均已给出明确决策，且全部依据 `docs/specs/02-project-yaml.md` 字段定义确认；最终打包合法性仍建议在 Debian 12 打包机执行 `ugcli check` / `ugcli pack` 实测确认。
 
 ## 7.7 后续实现清单（规范落地）
 

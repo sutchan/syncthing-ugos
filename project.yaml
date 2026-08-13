@@ -21,6 +21,7 @@ depend_fw_version: 1.13.0.0000
 is_docker_app: true
 depend_docker_version: 1.7.0.0000
 only_admin: true
+support_migration: false            # Docker 应用由系统按 data 卷管理，不迁移安装目录
 allow_add_access_path: true        # 允许用户授权同步目录
 permissions:
   - NETWORK.ACCESS_INTERNET
