@@ -1,0 +1,8 @@
+{
+  "name": "Syncthing for UGOS Pro",
+  "description": "Syncthing packaging, configuration manager, and documentation workstation for UGREEN NAS (UGOS Pro)",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

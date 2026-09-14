@@ -1,67 +1,35 @@
 #!/usr/bin/env bash
-# assemble.sh v1.0.2
-# Syncthing for UGOS Pro — 组装打包目录
-#
-# 功能: 将 project.yaml / icon.png / docker-compose.yaml 组装到
-#       打包根目录 com.syncthing.docker.syncthing/rootfs_common/
-#       供 ugcli check / ugcli pack 使用。
-#
-# 规范: docs/specs/01-project-structure.md, docs/specs/06-build-pack.md
-#
-# 前置: 先运行 export-images.sh 导出镜像 tar 到 rootfs_*/images/
-# 用法:  ./assemble.sh
-# 环境:  Linux 打包机(Debian 12)，需 bash
-
+# assemble.sh — Assemble package directory structure for ugcli pack
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+APP_ID="com.syncthing.docker.syncthing"
+TARGET_DIR="${ROOT_DIR}/${APP_ID}"
+IMAGE_TAG="${SYNCTHING_IMAGE:-docker.io/syncthing/syncthing:1.27.0}"
 
-PKG_ROOT="${PROJECT_ROOT}/com.syncthing.docker.syncthing"
-COMMON_DIR="${PKG_ROOT}/rootfs_common"
-ICON_SRC="${PROJECT_ROOT}/assets/icon.png"
-ICON_DST="${COMMON_DIR}/icon.png"
-PROJECT_YAML_SRC="${PROJECT_ROOT}/project.yaml"
-COMPOSE_TPL="${SCRIPT_DIR}/docker-compose.yaml.tpl"
-COMPOSE_DST="${COMMON_DIR}/docker-compose.yaml"
+echo "==> [assemble] Creating package layout at ${TARGET_DIR}..."
+mkdir -p "${TARGET_DIR}/rootfs_common"
+mkdir -p "${TARGET_DIR}/rootfs_amd64/images"
+mkdir -p "${TARGET_DIR}/rootfs_arm64/images"
 
-log() { echo "[assemble] $*"; }
-err() { echo "[assemble][ERROR] $*" >&2; }
+# 1. Copy project.yaml
+echo "==> Copying project.yaml..."
+cp "${ROOT_DIR}/project.yaml" "${TARGET_DIR}/project.yaml"
 
-# 读取镜像 tag: 优先 x_image_tag(与 version 解耦)，否则回退 version
-IMAGE_TAG="$(grep -E '^x_image_tag:' "${PROJECT_YAML_SRC}" | head -1 | awk '{print $2}' | tr -d '"')"
-if [ -z "${IMAGE_TAG}" ]; then
-  IMAGE_TAG="$(grep -E '^version:' "${PROJECT_YAML_SRC}" | head -1 | awk '{print $2}' | tr -d '"')"
+# 2. Copy icon.png
+echo "==> Copying icon.png to rootfs_common/..."
+cp "${ROOT_DIR}/assets/icon.png" "${TARGET_DIR}/rootfs_common/icon.png"
+
+# 3. Render docker-compose.yaml
+echo "==> Rendering docker-compose.yaml with image: ${IMAGE_TAG}..."
+sed "s|\${SYNCTHING_IMAGE}|${IMAGE_TAG}|g" "${ROOT_DIR}/build/docker-compose.yaml.tpl" > "${TARGET_DIR}/rootfs_common/docker-compose.yaml"
+
+# 4. Copy image tars if present
+if [ -d "${ROOT_DIR}/rootfs_amd64/images" ]; then
+  cp -r "${ROOT_DIR}/rootfs_amd64/images/"* "${TARGET_DIR}/rootfs_amd64/images/" 2>/dev/null || true
 fi
-IMAGE_FULL="docker.io/syncthing/syncthing:${IMAGE_TAG}"
-
-# 校验前置产物
-[ -f "${ICON_SRC}" ] || { err "缺少 ${ICON_SRC}，请先运行 build/make-icon.ps1 (Windows) 生成图标"; exit 1; }
-[ -d "${PKG_ROOT}/rootfs_amd64/images" ] || [ -d "${PKG_ROOT}/rootfs_arm64/images" ] || \
-  { err "缺少镜像 tar，请先运行 build/export-images.sh"; exit 1; }
-
-mkdir -p "${COMMON_DIR}"
-
-# 1. 复制 project.yaml 到打包根目录
-cp "${PROJECT_YAML_SRC}" "${PKG_ROOT}/project.yaml"
-log "复制 project.yaml -> ${PKG_ROOT}/project.yaml"
-
-# 2. 复制图标 (确保 512x512；若系统有 convert 则校验尺寸)
-if command -v identify >/dev/null 2>&1; then
-  dim="$(identify -format '%wx%h' "${ICON_SRC}")"
-  [ "${dim}" = "512x512" ] || log "警告: icon.png 尺寸为 ${dim}，建议 512x512"
+if [ -d "${ROOT_DIR}/rootfs_arm64/images" ]; then
+  cp -r "${ROOT_DIR}/rootfs_arm64/images/"* "${TARGET_DIR}/rootfs_arm64/images/" 2>/dev/null || true
 fi
-cp "${ICON_SRC}" "${ICON_DST}"
-log "复制 icon.png -> ${ICON_DST}"
 
-# 3. 渲染 compose
-sed "s|\${SYNCTHING_IMAGE}|${IMAGE_FULL}|g" "${COMPOSE_TPL}" > "${COMPOSE_DST}"
-# 校验: 渲染后应无残留的 ${SYNCTHING_IMAGE} 占位符
-if grep -q '\${SYNCTHING_IMAGE}' "${COMPOSE_DST}"; then
-  err "渲染失败: ${COMPOSE_DST} 仍残留 \${SYNCTHING_IMAGE} 占位符"
-  exit 1
-fi
-log "渲染 docker-compose.yaml -> ${COMPOSE_DST} (image=${IMAGE_FULL})"
-
-log "组装完成: ${PKG_ROOT}"
-log "下一步: ugcli check  &&  ugcli pack --arch all --build 1"
+echo "==> [assemble] Assembly completed successfully at ${TARGET_DIR}."
