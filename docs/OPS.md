@@ -1,5 +1,7 @@
 # 运维与故障排查手册 (OPS)
 
+> docs/OPS.md v1.2.0（文档自版本，与 UPK 包版本无关）
+
 本文档面向 NAS 管理员 / 使用者，说明 Syncthing for UGOS Pro 的日常运维、备份、升级与常见问题处理。开发/构建见 [DEVELOPMENT.md](./DEVELOPMENT.md)，平台规范见 `docs/specs/`。
 
 ## 1. 服务位置与状态

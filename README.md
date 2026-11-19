@@ -1,5 +1,7 @@
 # Syncthing for UGOS Pro
 
+> README.md v1.1.0（文档自版本，与 UPK 包版本无关）
+
 将 [Syncthing](https://github.com/syncthing/syncthing) 封装为绿联 NAS（UGOS Pro）**Docker 应用**的安装包（`.upk`）。
 
 - 应用 ID：`com.syncthing.docker.syncthing`

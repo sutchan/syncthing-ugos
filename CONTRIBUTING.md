@@ -1,5 +1,7 @@
 # 贡献指南 (CONTRIBUTING)
 
+> CONTRIBUTING.md v1.1.0（文档自版本，与 UPK 包版本无关）
+
 欢迎为 **Syncthing for UGOS Pro** 项目贡献代码、文档或问题反馈。
 
 ## 行为准则

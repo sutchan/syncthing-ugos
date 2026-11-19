@@ -1,5 +1,7 @@
 # 安全说明 (SECURITY)
 
+> docs/SECURITY.md v1.1.0（文档自版本，与 UPK 包版本无关）
+
 本文档说明 Syncthing for UGOS Pro 的权限模型、数据隐私与暴露风险，帮助管理员安全部署。平台安全红线见 `docs/specs/03-docker-image.md`。
 
 ## 1. 权限模型

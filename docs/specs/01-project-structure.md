@@ -1,5 +1,7 @@
 # 01 — 项目目录结构规范
 
+> 路径：docs/specs/01-project-structure.md
+> 文档版本：v1.1.0（文档自版本，与 UPK 包版本无关）
 > 规范来源：<https://developer.ugnas.com/doc/backend/quick-start/develop-docker-app.html>
 
 ## 1.1 UPK 打包目录结构

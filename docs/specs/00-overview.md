@@ -2,7 +2,8 @@
 
 > 本目录（`docs/specs/`）汇总将 [Syncthing](https://github.com/syncthing/syncthing) 封装为绿联 NAS（UGOS Pro）Docker 应用所需遵循的全部平台规范，以及本项目的适配设计决策。
 
-- 文档版本：v1.2.0
+- 路径：docs/specs/00-overview.md
+- 文档版本：v1.3.0（文档自版本，与 UPK 包版本无关）
 - 适用平台：UGOS Pro（最低依赖固件 `1.13.0.0000`、Docker 套件 `1.7.0.0000`）
 - 上游项目：<https://github.com/syncthing/syncthing>
 - 平台规范来源：<https://developer.ugnas.com/doc/backend/quick-start/develop-docker-app.html>

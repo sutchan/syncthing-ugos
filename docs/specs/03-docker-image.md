@@ -1,5 +1,7 @@
 # 03 — Docker 镜像与 compose 规范
 
+> 路径：docs/specs/03-docker-image.md
+> 文档版本：v1.1.0（文档自版本，与 UPK 包版本无关）
 > 规范来源：<https://developer.ugnas.com/doc/backend/quick-start/develop-docker-app.html>
 
 ## 3.1 Dockerfile 与镜像构建

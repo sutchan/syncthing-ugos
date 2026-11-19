@@ -1,5 +1,7 @@
 # 05 — 应用生命周期、端口、配置、打开方式与登录认证
 
+> 路径：docs/specs/05-app-lifecycle.md
+> 文档版本：v1.1.0（文档自版本，与 UPK 包版本无关）
 > 规范来源：
 > - 启停：<https://developer.ugnas.com/doc/backend/application/start-stop.html>
 > - 端口：<https://developer.ugnas.com/doc/backend/application/app-port.html>

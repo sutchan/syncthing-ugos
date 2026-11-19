@@ -1,5 +1,7 @@
 # 02 — project.yaml 字段规范
 
+> 路径：docs/specs/02-project-yaml.md
+> 文档版本：v1.2.0（文档自版本，与 UPK 包版本无关）
 > 规范来源：<https://developer.ugnas.com/doc/tools/project-yaml.html>
 > 当前 `spec_version` 固定为 `2.1`。
 
