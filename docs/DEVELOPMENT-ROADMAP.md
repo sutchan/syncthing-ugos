@@ -6,6 +6,18 @@
 > 生成日期：2026-11-19
 > 定位：本文是**开发/迁移任务的唯一行动清单**，事实陈述以仓库真相源为准，行动项标注来源与待验证状态。
 
+## 执行进度（2026-11-19 更新）
+
+| 任务 | 关联 BUG | 状态 | 说明 |
+|------|----------|------|------|
+| T1-1 `x_image_tag`/端口真相源改造 | BUG-03/BUG-05 | ✅ 已完成 | 新增 `build/project-meta.sh`；`build-all.sh`/`assemble.sh` 从 `project.yaml` 读取 tag 与端口；compose 模板端口注入；已用 node 复现渲染验证 |
+| T1-2 镜像 tar manifest 校验 | BUG-04 | ✅ 已完成 | `export-images.sh` 恢复 `manifest.json` 解析（单 tag/tag 一致/架构一致），失败删坏 tar |
+| T1-4 预检脚本 | BUG-07 | ✅ 已完成 | 新增 `build/preflight.sh` 并接入 `build-all.sh` Step 0 |
+| T1-3 卸载双路径 + 回滚 SOP | BUG-06 | ✅ 已完成 | `OPS.md` 新增安装/卸载章节、回滚双路径与验证 |
+| T1-5 迁移边界澄清 | BUG-06 | ✅ 已完成 | `OPS.md` 与 `02-project-yaml.md` 明确 `support_migration` 仅指平台级安装目录迁移 |
+
+> 验证说明：本机无可用 bash（`system32\bash.exe` 为异常 shim），已用 node 复现核心逻辑做静态验证（脚本行尾/heredoc 配对、真相源解析、compose 渲染）；**真实 `ugcli check`/`pack` 与真机验证仍未执行**（见 BUG-08、待用户决策 §8.3）。
+
 ## 0. 真相源与证据基线
 
 本文所有"现状"结论均来自下列文件，避免按记忆或文档二手描述推断：

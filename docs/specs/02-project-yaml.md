@@ -31,7 +31,7 @@
 
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| `support_migration` | boolean | 否 | 是否支持迁移安装目录，默认 `false` |
+| `support_migration` | boolean | 否 | 是否支持**平台级安装目录迁移**（换卷/换盘时系统自动搬运安装目录），默认 `false`。本应用为 Docker 应用，数据经 `data` 卷管理，取 `false`；不影响用户按 `OPS.md` 手工备份/迁移 `data` 与同步目录 |
 | `allow_add_access_path` | boolean | 否 | 是否允许用户授权访问文件夹，默认 `false` |
 
 ### 权限配置
@@ -98,6 +98,7 @@ depend_fw_version: 1.13.0.0000
 is_docker_app: true
 depend_docker_version: 1.7.0.0000
 only_admin: true
+support_migration: false           # 不支持平台级安装目录迁移；data 卷由用户手工迁移
 allow_add_access_path: true        # 允许用户授权同步目录
 permissions:
   - NETWORK.ACCESS_INTERNET

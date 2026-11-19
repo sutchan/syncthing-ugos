@@ -4,8 +4,14 @@
 
 ## [Unreleased]
 
+### 修复
+- `x_image_tag` 与 GUI 端口成为构建链路唯一真相源：新增 `build/project-meta.sh`，`build-all.sh`/`assemble.sh`/`export-images.sh` 统一从 `project.yaml` 读取镜像 tag 与端口，命令行 `VERSION` 仅作覆盖（原 `assemble.sh` 硬编码默认 tag、compose 模板端口写死的问题已消除）。
+- `export-images.sh` 恢复 `manifest.json` 真实解析校验：断言单一 tag、tag 与期望一致、架构与 `--platform` 一致，校验失败删除坏 tar，替换原 `grep -c manifest.json` 假校验。
+- 新增 `build/preflight.sh` 并接入 `build-all.sh` Step 0：预检依赖工具、`x_image_tag`/`port` 真相源字段与关键文件。
+
 ### 文档
 - 新增 `docs/DEVELOPMENT-ROADMAP.md`：应用开发与迁移任务规划，涵盖版本/兼容基线、功能完整性梳理、安装卸载与自启动验证、数据迁移方案、12 项待修复问题、验收标准与测试场景、P0/P1/P2 分阶段优先级与交付物；并登记到 `docs/README.md` 索引。
+- `OPS.md` 补齐安装/卸载双路径、手工数据迁移步骤与校验表、升级回滚 SOP，澄清 `support_migration` 边界；`02-project-yaml.md` 同步该字段说明与示例；`DEVELOPMENT.md` 同步构建流水线与真相源说明。
 
 ## [1.27.0.5] - 2026-08-13
 

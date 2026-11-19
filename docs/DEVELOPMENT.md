@@ -15,8 +15,10 @@ syncthing-ugos/
 ├── assets/
 │   └── icon.png             # 应用图标（512×512 PNG，由 make-icon.ps1 生成）
 ├── build/
-│   ├── build-all.sh         # 一键：导出镜像→组装→ugcli check→pack
-│   ├── export-images.sh     # 按架构 docker pull 并 save 为 tar + 校验
+│   ├── build-all.sh         # 一键：预检→导出镜像→组装→ugcli check→pack
+│   ├── preflight.sh         # 打包前预检（依赖/真相源字段/关键文件）
+│   ├── project-meta.sh      # 真相源读取库（从 project.yaml 取镜像 tag/端口）
+│   ├── export-images.sh     # 按架构 docker pull 并 save 为 tar + manifest 校验
 │   ├── assemble.sh          # 组装 rootfs_common/rootfs_*/ 打包目录
 │   ├── docker-compose.yaml.tpl  # compose 模板（渲染为 rootfs_common/）
 │   └── make-icon.ps1        # 生成占位图标（Windows 侧）
@@ -52,10 +54,13 @@ powershell -ExecutionPolicy Bypass -File build/make-icon.ps1
 
 脚本依次执行：
 
-1. `export-images.sh`：对每架构 `docker pull --platform` 拉取单平台镜像，导出为 `rootfs_{arch}/images/*.tar`，并校验 tar 内仅一个 tag 且与 `IMAGE_FULL` 一致；
-2. `assemble.sh`：渲染 `docker-compose.yaml.tpl`（注入 `SYNCTHING_IMAGE`），复制 `project.yaml` 与 `assets/icon.png` 到 `rootfs_common/`；
+0. `preflight.sh`：预检依赖工具（docker/python3/jq/tar）、真相源字段（`x_image_tag` 非 `latest`、`port` 为数字）与关键文件；
+1. `export-images.sh`：对每架构 `docker pull --platform` 拉取单平台镜像，导出为 `rootfs_{arch}/images/*.tar`，用 `python3` 解析 `manifest.json` 校验单一 tag、tag 与期望一致、架构与 `--platform` 一致，失败即删除坏 tar；
+2. `assemble.sh`：渲染 `docker-compose.yaml.tpl`（注入 `SYNCTHING_IMAGE` 镜像引用与 `SYNCTHING_PORT` 宿主端口，均来自 `project.yaml`），复制 `project.yaml` 与 `assets/icon.png` 到 `rootfs_common/`；
 3. `ugcli check`：校验 `project.yaml` 与 `rootfs_*` 目录结构；
 4. `ugcli pack`：生成 `build_dir/pkgs/upk/{arch}_com.syncthing.docker.syncthing_{version}.{build}.upk`。
+
+> **镜像 tag 真相源**：`build-all.sh`/`assemble.sh`/`export-images.sh` 统一通过 `project-meta.sh` 从 `project.yaml` 的 `x_image_tag`（缺省回退 `version`）读取镜像 tag；命令行 `VERSION` 位置参数仅作覆盖。GUI 宿主端口取自 `project.yaml` 的 `port`。
 
 ## 5. 仅导出镜像 / 仅组装
 
