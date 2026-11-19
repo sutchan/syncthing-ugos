@@ -54,8 +54,9 @@
 | 7 | 多语言 | 已确认 | 至少 `en-US` + `zh-CN`；扩展见 `docs/specs/02` |
 | 8 | 版本号策略 | 已确认 | `version` 跟随 Syncthing 上游；UPK 包版本 `应用.构建号` |
 | 9 | `proxy_path` 留空 | 已确认 | `proxy_path` 为可选字段（规范标注「否」），`open_type: tab` 直接暴露原生 UI 时省略该字段符合规范 |
+| 10 | 镜像 tag / 端口真相源 | 已确认 | 镜像 tag 取 `project.yaml` 的 `x_image_tag`（回退 `version`），GUI 宿主端口取 `port`（默认 8384）；由 `build/project-meta.sh` 单点读取，构建脚本不再硬编码，命令行 `VERSION` 仅作覆盖 |
 
-> 结论：设计层面 9 项均已给出明确决策，且全部依据 `docs/specs/02-project-yaml.md` 字段定义确认；最终打包合法性仍建议在 Debian 12 打包机执行 `ugcli check` / `ugcli pack` 实测确认。
+> 结论：设计层面 10 项均已给出明确决策，且全部依据 `docs/specs/02-project-yaml.md` 字段定义确认；最终打包合法性仍建议在 Debian 12 打包机执行 `ugcli check` / `ugcli pack` 实测确认。
 
 ## 7.7 后续实现清单（规范落地）
 
@@ -68,6 +69,9 @@
 - [x] `build/docker-compose.yaml.tpl`（模板）
 - [x] `README.md`（安装、使用、端口、外网同步说明）
 - [x] `build/assemble.sh` / `build/make-icon.ps1`（组装与图标辅助脚本）
-- [x] `build/build-all.sh`（一键串联 export→assemble→check→pack）
+- [x] `build/build-all.sh`（一键串联 preflight→export→assemble→check→pack）
 - [x] `build/dx4600-build-env.sh`（DX4600 上创建 Debian 12 构建容器，复用宿主 docker.sock）
+- [x] `build/project-meta.sh`（真相源读取库，统一镜像 tag / 端口）
+- [x] `build/preflight.sh`（打包前预检，已接入 `build-all.sh` Step 0）
+- [x] `export-images.sh` 恢复 `manifest.json` 校验（单 tag / tag 一致 / 架构一致）
 - [ ] `ugcli check` / `ugcli pack` 实测（需在 Debian 12 打包机执行 `./build-all.sh`）

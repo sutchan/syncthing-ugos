@@ -48,7 +48,7 @@
 
 ## 待确认 / 待验证事项
 
-设计层面 9 项决策已在 [07-syncthing-design.md](./07-syncthing-design.md) 第 7.6 节全部给出明确结论（含 `start_cmd` 留空语义、`open_type: tab` + 省略 `proxy_path` 组合的合规性），**无遗留设计待确认项**。
+设计层面 10 项决策已在 [07-syncthing-design.md](./07-syncthing-design.md) 第 7.6 节全部给出明确结论（含 `start_cmd` 留空语义、`open_type: tab` + 省略 `proxy_path` 组合的合规性、镜像 tag/端口真相源），**无遗留设计待确认项**。
 
 构建链路收尾动作（非设计待确认）：
 
