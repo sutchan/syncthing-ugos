@@ -1,5 +1,7 @@
 # 08 — 发布与上架规范
 
+> 路径：docs/specs/08-publishing.md
+> 文档版本：v1.1.0（文档自版本，与 UPK 包版本无关）
 > 规范来源：<https://developer.ugnas.com/doc/backend/quick-start/publish.html>
 > 完整上架流程参考：<https://developer.ugnas.com/doc/backend/quick-start/flow.html>
 > 本文件基于已确认的发布页要点整理；完整审核要求以官方 `flow.html` 为准。

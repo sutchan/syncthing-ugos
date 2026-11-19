@@ -1,5 +1,7 @@
 # 06 — 构建与打包规范（ugcli）
 
+> 路径：docs/specs/06-build-pack.md
+> 文档版本：v1.1.0（文档自版本，与 UPK 包版本无关）
 > 规范来源：<https://developer.ugnas.com/doc/tools/ugcli.html>
 > 开发准备：<https://developer.ugnas.com/doc/backend/quick-start/prepare.html>
 

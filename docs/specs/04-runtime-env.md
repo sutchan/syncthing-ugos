@@ -1,5 +1,7 @@
 # 04 — 运行环境、目录、权限、环境变量
 
+> 路径：docs/specs/04-runtime-env.md
+> 文档版本：v1.1.0（文档自版本，与 UPK 包版本无关）
 > 规范来源：<https://developer.ugnas.com/doc/backend/application/runtime-environment.html>
 > 系统基础环境：<https://github.com/ugreen-opensource/ugospro-debian12>（UGOS Pro 基于 Debian 12 Bookworm）
 

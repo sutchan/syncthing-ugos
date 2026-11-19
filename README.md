@@ -16,8 +16,9 @@
 |------|------|
 | [README.md](./README.md) | 项目说明、构建与配置 |
 | [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md) | 开发/构建/打包/调试指南 |
-| [docs/OPS.md](./docs/OPS.md) | 运维与故障排查手册 |
+| [docs/OPS.md](./docs/OPS.md) | 运维与故障排查手册（安装/卸载/迁移/回滚） |
 | [docs/SECURITY.md](./docs/SECURITY.md) | 安全说明与暴露风险 |
+| [docs/DEVELOPMENT-ROADMAP.md](./docs/DEVELOPMENT-ROADMAP.md) | 开发与迁移任务规划（版本基线/功能完整性/问题清单/验收/优先级） |
 | [docs/specs/](./docs/specs/) | 绿联 UPK 平台规范文档（`00`~`08`） |
 | [CHANGELOG.md](./CHANGELOG.md) | 版本变更记录 |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | 贡献指南 |
@@ -37,9 +38,11 @@
 syncthing-ugos/
 ├── docs/specs/                 # 平台规范与适配设计文档
 ├── build/                      # 构建脚本
-│   ├── export-images.sh        # 导出 amd64/arm64 镜像 tar
+│   ├── build-all.sh            # 一键：preflight→export→assemble→check→pack
+│   ├── preflight.sh            # 打包前预检（依赖/真相源字段/关键文件）
+│   ├── project-meta.sh         # 真相源读取库（从 project.yaml 取镜像 tag/端口）
+│   ├── export-images.sh        # 导出 amd64/arm64 镜像 tar + manifest 校验
 │   ├── assemble.sh             # 组装打包目录 (Linux 打包机)
-│   ├── build-all.sh            # 一键串联 export→assemble→check→pack
 │   ├── dx4600-build-env.sh     # 在绿联 DX4600 一键起 Debian 12 构建容器
 │   ├── make-icon.ps1           # 生成应用图标 (Windows)
 │   └── docker-compose.yaml.tpl # compose 模板

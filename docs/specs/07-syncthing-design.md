@@ -1,5 +1,8 @@
 # 07 — Syncthing 适配设计决策与待确认项
 
+> 路径：docs/specs/07-syncthing-design.md
+> 文档版本：v1.2.0（文档自版本，与 UPK 包版本无关）
+
 本文档记录将 Syncthing 封装为 UGOS Pro Docker 应用的设计决策，以及需要用户 / 平台 / 上游进一步确认的事项。
 
 ## 7.1 形态选择
