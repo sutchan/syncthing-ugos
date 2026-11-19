@@ -57,9 +57,15 @@ com.syncthing.docker.syncthing/
 ```
 syncthing-ugos/
 ├── docs/specs/                 # 本规范文档集
-├── build/                     # 构建脚本（导出镜像、生成 compose）
-│   ├── export-images.sh
-│   └── docker-compose.yaml.tpl
+├── build/                     # 构建脚本（预检、导出镜像、组装、生成 compose）
+│   ├── build-all.sh           # 一键：preflight→export→assemble→check→pack
+│   ├── preflight.sh           # 打包前预检
+│   ├── project-meta.sh        # 真相源读取库（从 project.yaml 取 tag/端口）
+│   ├── export-images.sh       # 镜像导出 + manifest 校验
+│   ├── assemble.sh            # 组装打包目录
+│   ├── docker-compose.yaml.tpl
+│   ├── dx4600-build-env.sh    # DX4600 上创建 Debian 12 构建容器
+│   └── make-icon.ps1          # 生成图标（Windows）
 ├── assets/icon.png            # 应用图标源文件
 ├── project.yaml               # 应用元数据（与打包目录一致）
 └── README.md

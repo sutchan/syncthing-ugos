@@ -12,6 +12,7 @@
 ### 文档
 - 新增 `docs/DEVELOPMENT-ROADMAP.md`：应用开发与迁移任务规划，涵盖版本/兼容基线、功能完整性梳理、安装卸载与自启动验证、数据迁移方案、12 项待修复问题、验收标准与测试场景、P0/P1/P2 分阶段优先级与交付物；并登记到 `docs/README.md` 索引。
 - `OPS.md` 补齐安装/卸载双路径、手工数据迁移步骤与校验表、升级回滚 SOP，澄清 `support_migration` 边界；`02-project-yaml.md` 同步该字段说明与示例；`DEVELOPMENT.md` 同步构建流水线与真相源说明。
+- 全量文档治理：为全部 17 个 Markdown 文档补齐「路径 + 文档自版本」头部标注；根 `README.md` 同步新增构建脚本、preflight 流程与真相源说明；`CONTRIBUTING.md` 补 `jq`/`tar` 依赖；`specs/00`~`08` 版本头规范化。
 
 ## [1.27.0.5] - 2026-08-13
 

@@ -49,7 +49,7 @@ services:
       - ${UGAPP_SHARED_DIR}:/var/syncthing/Sync
     network_mode: bridge
     ports:
-      - 8384:8384      # Web GUI
+      - 8384:8384      # Web GUI（宿主端口由 project.yaml port 注入，默认 8384；容器内固定 8384）
       - 22000:22000    # 设备间同步（TCP）
       - 22000:22000/udp
       - 21027:21027/udp # 本地发现
@@ -63,8 +63,9 @@ services:
 ```
 
 > 说明：
-> - `ports` 中 `8384` 为 `project.yaml` 声明的 `port`（GUI），须与之一致；
+> - `ports` 中 GUI 宿主端口取自 `project.yaml` 的 `port`（默认 `8384`），由 `build/assemble.sh` 渲染模板时注入，容器内端口固定 `8384`，二者须与本应用声明一致；
 > - 同步/发现端口（22000、21027）为 Syncthing 协议端口，系统不为其提供代理转发，仅局域网/直连可用；
+> - 镜像导出后由 `export-images.sh` 解析 `manifest.json`，断言单一 tag、tag 与 `x_image_tag` 一致、架构与 `--platform` 一致，失败即删除坏 tar；
 > - `${UGAPP_SHARED_DIR}` 由平台在用户通过 `allow_add_access_path: true` 授权文件夹后注入，挂载为默认同步库 `/var/syncthing/Sync`；若用户未授权任何目录，该挂载为空，数据默认存于 `./data`。无需在 `parameters` 中声明额外 `path` 配置项。
 
 ## 3.3 安全红线（必须遵守）

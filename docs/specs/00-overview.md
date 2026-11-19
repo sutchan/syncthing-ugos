@@ -31,6 +31,7 @@
 | [../DEVELOPMENT.md](../DEVELOPMENT.md) | 开发/构建/打包/调试指南 |
 | [../OPS.md](../OPS.md) | 运维与故障排查手册 |
 | [../SECURITY.md](../SECURITY.md) | 安全说明与暴露风险 |
+| [../DEVELOPMENT-ROADMAP.md](../DEVELOPMENT-ROADMAP.md) | 开发/迁移任务规划、功能完整性评估、问题清单与验收标准 |
 
 ## 关键结论速览
 
@@ -49,9 +50,14 @@
 
 设计层面 9 项决策已在 [07-syncthing-design.md](./07-syncthing-design.md) 第 7.6 节全部给出明确结论（含 `start_cmd` 留空语义、`open_type: tab` + 省略 `proxy_path` 组合的合规性），**无遗留设计待确认项**。
 
-仅剩的收尾动作为打包机实测验证（非设计待确认）：
+构建链路收尾动作（非设计待确认）：
 
-- 在 Debian 12 打包机执行 `ugcli check` / `ugcli pack`，确认 `project.yaml` 与 `rootfs_*` 目录结构、镜像 tar 被平台正确接受（见 07 第 7.7 节实现清单）。
+- [x] 镜像 tag / GUI 端口真相源统一到 `project.yaml`（`x_image_tag` / `port`），由 `build/project-meta.sh` 供各构建脚本读取；
+- [x] `export-images.sh` 恢复 `manifest.json` 真实校验（单 tag / tag 一致 / 架构一致），失败删除坏 tar；
+- [x] `build/preflight.sh` 接入 `build-all.sh`，打包前预检依赖、真相源字段与关键文件；
+- [ ] 在 Debian 12 打包机执行 `ugcli check` / `ugcli pack`，确认 `project.yaml` 与 `rootfs_*` 目录结构、镜像 tar 被平台正确接受（见 07 第 7.7 节实现清单）。
+
+> 完整的已修复问题、验收标准与待执行测试场景见 [DEVELOPMENT-ROADMAP.md](../DEVELOPMENT-ROADMAP.md)。
 
 > 自 v1.2.0 起，原「`start_cmd` 语义」「`open_type: tab` + 省略 `proxy_path`」两条待确认项的合法性已由 07 第 7.6 节依据 `02-project-yaml.md` 字段定义正式确认，自待确认清单移除。
 

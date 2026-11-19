@@ -56,10 +56,13 @@ ugcli pack --build 1 --arch amd64   # 仅打某一架构
 
 ## 6.3 本项目推荐构建流程
 
-1. 由 `build/export-images.sh` 拉取并 `docker save` 导出 amd64/arm64 两套 Syncthing 镜像 tar 到 `rootfs_*/images/`；
-2. 将 `project.yaml`、`assets/icon.png`、`build/docker-compose.yaml` 组装到打包目录 `rootfs_common/`；
+0. `build/preflight.sh` 预检：依赖工具（docker/python3/jq/tar）、真相源字段（`x_image_tag` 非 `latest`、`port` 为数字）与关键文件；
+1. 由 `build/export-images.sh` 拉取并 `docker save` 导出 amd64/arm64 两套 Syncthing 镜像 tar 到 `rootfs_*/images/`，并解析 `manifest.json` 校验 tag/架构一致性；
+2. 将 `project.yaml`、`assets/icon.png`、`build/docker-compose.yaml` 组装到打包目录 `rootfs_common/`；镜像 tag（来自 `x_image_tag`，回退 `version`）与 GUI 宿主端口（来自 `port`，默认 `8384`）由 `build/project-meta.sh` 读取真相源后注入模板；
 3. `ugcli check` 校验；
 4. `ugcli pack --arch all --build 1` 生成 `.upk`。
+
+> 一键执行：`./build/build-all.sh [VERSION] [BUILD] [ARCH...]`；`VERSION` 省略时取 `project.yaml` 的 `x_image_tag` 真相源，`BUILD` 默认 `1`，架构默认 `amd64 arm64`（见 [DEVELOPMENT.md](../DEVELOPMENT.md) §4）。
 
 ## 6.4 本地测试
 

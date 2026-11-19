@@ -91,8 +91,10 @@ cd /repo
 ./build/build-all.sh 1.27.0 2 amd64 arm64
 ```
 
-脚本自动完成：导出 `syncthing/syncthing:1.27.0` 的 amd64/arm64 两套 tar → 组装打包目录 → `ugcli check` → `ugcli pack --arch all --build 2`。
-（亦可在 Linux 打包机分步执行 `export-images.sh` / `assemble.sh` / `ugcli check` / `ugcli pack`。）
+脚本自动完成：预检（`preflight.sh`）→ 导出 `syncthing/syncthing:1.27.0` 的 amd64/arm64 两套 tar（含 manifest 校验）→ 组装打包目录 → `ugcli check` → `ugcli pack --arch all --build 2`。
+（亦可在 Linux 打包机分步执行 `preflight.sh` / `export-images.sh` / `assemble.sh` / `ugcli check` / `ugcli pack`。）
+
+> **镜像 tag / 端口真相源**：`build-all.sh`/`assemble.sh`/`export-images.sh` 统一通过 `build/project-meta.sh` 从 `project.yaml` 的 `x_image_tag`（缺省回退 `version`）读取镜像 tag，GUI 宿主端口取自 `port`（默认 `8384`）；上方命令的首个参数 `1.27.0` 仅作覆盖，省略时自动取真相源。详见 [DEVELOPMENT.md](./docs/DEVELOPMENT.md) §4。
 
 ### 3. 校验与打包（手动分步，等价于一键）
 

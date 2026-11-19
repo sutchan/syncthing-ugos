@@ -13,7 +13,7 @@
 ## 开发环境
 
 - 开发机：Debian 12 (Linux)，支持 amd64 / arm64；
-- 工具链：`git`、`docker`（含 buildx）、`python3`、`bash`；
+- 工具链：`git`、`docker`（含 buildx）、`python3`、`jq`、`tar`、`bash`（均经 `build/preflight.sh` 预检）；
 - 平台工具：`ugcli`（见 [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md)）；
 - 测试设备：UGOS Pro 1.13.0.0000+ NAS，已申请开发者授权 `ugdev.sig`。
 
