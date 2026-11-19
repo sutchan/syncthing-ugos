@@ -1,6 +1,6 @@
 # 项目文档导航
 
-> docs/README.md v1.0.0
+> docs/README.md v1.0.1
 > Syncthing for UGOS Pro — 文档总入口
 
 本文件是 `docs/` 目录的导航索引，汇总将 [Syncthing](https://github.com/syncthing/syncthing) 封装为绿联 NAS（UGOS Pro）Docker 应用的所有文档。按阅读顺序从规范到落地，帮助新成员快速建立全局认知。
@@ -41,6 +41,7 @@
 | [DEVELOPMENT.md](./DEVELOPMENT.md) | 开发环境、一键构建、手动分步打包、调试 | 本地构建/联调时 |
 | [OPS.md](./OPS.md) | 安装后配置、日常运维、故障排查 | 部署运行/报障时 |
 | [SECURITY.md](./SECURITY.md) | 安全模型、暴露面、加固建议 | 安全评审/审计时 |
+| [DEVELOPMENT-ROADMAP.md](./DEVELOPMENT-ROADMAP.md) | 开发/迁移任务规划：版本基线、功能完整性、迁移方案、问题清单、验收与分阶段优先级 | 规划开发/迁移/测试验收时 |
 
 ## 三、仓库其他关键文件
 

@@ -7,7 +7,7 @@ services:
       - ${UGAPP_SHARED_DIR}:/var/syncthing/Sync
     network_mode: bridge
     ports:
-      - 8384:8384
+      - ${SYNCTHING_PORT}:8384
       - 22000:22000
       - 22000:22000/udp
       - 21027:21027/udp
